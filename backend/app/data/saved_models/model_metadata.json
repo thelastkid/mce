@@ -1,0 +1,38 @@
+{
+  "model_name": "Apple Disease Vision Classifier (HistGradientBoosting)",
+  "framework": "Scikit-learn + Pillow Vision Pipeline",
+  "classes": [
+    "Apple___Black_rot",
+    "Apple___healthy"
+  ],
+  "class_display_names": {
+    "Apple___Black_rot": "Apple Black Rot (Botryosphaeria obtusa)",
+    "Apple___healthy": "Apple Healthy (Normal Leaf)"
+  },
+  "num_features": 879,
+  "total_samples": 210,
+  "class_distribution": {
+    "Apple___Black_rot": 102,
+    "Apple___healthy": 108
+  },
+  "cv_accuracy": 96.67,
+  "cv_std": 1.9,
+  "training_accuracy": 100.0,
+  "confusion_matrix": [
+    [
+      102,
+      0
+    ],
+    [
+      0,
+      108
+    ]
+  ],
+  "feature_types": [
+    "RGB Moments (6)",
+    "HSV Moments (6)",
+    "Color Histograms (96)",
+    "Spatial Grid Distribution (768)",
+    "Texture & Edge Moments (3)"
+  ]
+}
