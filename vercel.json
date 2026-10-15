@@ -6,17 +6,7 @@
       "framework": "fastapi",
       "runtime": "python3.12",
       "entrypoint": "app.py",
-      "buildCommand": "npm --prefix frontend ci && npm --prefix frontend run build",
-      "includeFiles": [
-        "backend/app/**/*.py",
-        "backend/app/data/**",
-        "frontend/dist/**"
-      ],
-      "excludeFiles": [
-        "backend/tests/**",
-        "backend/**/__pycache__/**",
-        "frontend/node_modules/**"
-      ]
+      "buildCommand": "npm --prefix frontend ci && npm --prefix frontend run build"
     },
     "backend": {
       "root": "backend",
