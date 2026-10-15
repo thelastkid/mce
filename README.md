@@ -106,3 +106,26 @@ cd e:\mce\backend
 python -m pytest tests -v
 ```
 All 11 tests pass covering deployment estimation, GPU allocations, smart file analysis, live pricing feeds, and plant pathology inference.
+
+## 🐳 Docker
+
+Build and run the unified API + frontend container:
+
+```powershell
+docker compose up --build
+```
+
+Open `http://localhost:8000` for the dashboard and `http://localhost:8000/docs` for the API documentation.
+
+## ☸️ Kubernetes
+
+Build the image and load it into the current local Kubernetes cluster:
+
+```powershell
+docker build -t mce:latest .
+kind load docker-image mce:latest # kind clusters only
+kubectl apply -k k8s/
+kubectl -n mce get pods,svc,ingress
+```
+
+The manifests create a two-replica Deployment, health probes, CPU-based autoscaling from two to five replicas, a ClusterIP Service, and an nginx Ingress at `http://mce.local`. For a remote cluster, push `mce:latest` to a registry and update the image in `k8s/deployment.yaml` before applying.
