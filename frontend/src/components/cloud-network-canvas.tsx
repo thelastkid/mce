@@ -26,6 +26,14 @@ export function CloudNetworkCanvas() {
     if (!context) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const styles = getComputedStyle(document.documentElement);
+    const canvasBlob = styles.getPropertyValue("--canvas-blob").trim();
+    const canvasLink = styles.getPropertyValue("--canvas-link").trim();
+    const canvasLinkMuted = styles.getPropertyValue("--canvas-link-muted").trim();
+    const canvasPacket = styles.getPropertyValue("--canvas-packet").trim();
+    const canvasNode = styles.getPropertyValue("--canvas-node").trim();
+    const canvasGlow = styles.getPropertyValue("--canvas-glow").trim();
+    const canvasTransparent = styles.getPropertyValue("--canvas-transparent").trim();
     const pointer = { x: -1000, y: -1000 };
     const ripples: Ripple[] = [];
     let nodes: NetworkNode[] = [];
@@ -55,14 +63,14 @@ export function CloudNetworkCanvas() {
     function render(time: number, staticFrame = false) {
       context.clearRect(0, 0, width, height);
       const blobs = [
-        [width * 0.12, height * 0.12, 310, "rgba(234,179,8,.055)"],
-        [width * 0.86, height * 0.28, 360, "rgba(56,189,248,.045)"],
-        [width * 0.62, height * 0.92, 420, "rgba(234,179,8,.04)"],
+        [width * 0.12, height * 0.12, 310, canvasBlob],
+        [width * 0.86, height * 0.28, 360, canvasBlob],
+        [width * 0.62, height * 0.92, 420, canvasBlob],
       ] as const;
       for (const [x, y, radius, color] of blobs) {
         const gradient = context.createRadialGradient(x, y, 0, x, y, radius);
         gradient.addColorStop(0, color);
-        gradient.addColorStop(1, "rgba(0,0,0,0)");
+        gradient.addColorStop(1, canvasTransparent);
         context.fillStyle = gradient;
         context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
       }
@@ -104,7 +112,7 @@ export function CloudNetworkCanvas() {
       context.lineWidth = 1;
       links.forEach(([from, to], index) => {
         const nearPointer = Math.min(Math.hypot(from.x - pointer.x, from.y - pointer.y), Math.hypot(to.x - pointer.x, to.y - pointer.y)) < 130;
-        context.strokeStyle = nearPointer ? "rgba(234,179,8,.3)" : "rgba(180,180,190,.09)";
+        context.strokeStyle = nearPointer ? canvasLink : canvasLinkMuted;
         context.beginPath();
         context.moveTo(from.x, from.y);
         context.lineTo(to.x, to.y);
@@ -113,7 +121,7 @@ export function CloudNetworkCanvas() {
           const progress = ((time * 0.00008 + index * 0.13) % 1);
           const packetX = from.x + (to.x - from.x) * progress;
           const packetY = from.y + (to.y - from.y) * progress;
-          context.strokeStyle = "rgba(234,179,8,.7)";
+          context.strokeStyle = canvasPacket;
           context.beginPath();
           context.moveTo(packetX, packetY);
           context.lineTo(packetX - (to.x - from.x) * 0.06, packetY - (to.y - from.y) * 0.06);
@@ -123,13 +131,13 @@ export function CloudNetworkCanvas() {
 
       nodes.forEach((node) => {
         if (node.cloud) {
-          context.fillStyle = "rgba(234,179,8,.75)";
+          context.fillStyle = canvasNode;
           context.font = "13px sans-serif";
           context.fillText("☁", node.x - 7, node.y + 5);
         } else {
-          context.fillStyle = "rgba(180,180,190,.55)";
+          context.fillStyle = canvasNode;
           context.shadowBlur = 8;
-          context.shadowColor = "rgba(234,179,8,.35)";
+          context.shadowColor = canvasGlow;
           context.beginPath();
           context.arc(node.x, node.y, 2, 0, Math.PI * 2);
           context.fill();
@@ -139,17 +147,19 @@ export function CloudNetworkCanvas() {
 
       if (pointer.x > -500) {
         const glow = context.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 180);
-        glow.addColorStop(0, "rgba(234,179,8,.1)");
-        glow.addColorStop(1, "rgba(234,179,8,0)");
+        glow.addColorStop(0, canvasLink);
+        glow.addColorStop(1, canvasTransparent);
         context.fillStyle = glow;
         context.fillRect(pointer.x - 180, pointer.y - 180, 360, 360);
       }
       ripples.forEach((ripple) => {
         const radius = ripple.age * 220;
-        context.strokeStyle = `rgba(234,179,8,${Math.max(0, 0.35 - ripple.age * 0.12)})`;
+        context.strokeStyle = canvasPacket;
+        context.globalAlpha = Math.max(0, 0.35 - ripple.age * 0.12);
         context.beginPath();
         context.arc(ripple.x, ripple.y, radius, 0, Math.PI * 2);
         context.stroke();
+        context.globalAlpha = 1;
       });
     }
 

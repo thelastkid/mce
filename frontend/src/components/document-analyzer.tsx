@@ -119,7 +119,15 @@ export function DocumentAnalyzer({ onAnalysisComplete, onAnalysisReset }: Props)
   }
 
   return (
-    <section className="panel p-5 sm:p-6" aria-labelledby="doc-analyzer-title">
+    <section
+      className="panel card-upload p-5 sm:p-6"
+      aria-labelledby="doc-analyzer-title"
+      onPointerMove={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        event.currentTarget.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+        event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
+      }}
+    >
       {/* Header */}
       <div className="mb-5 flex items-center justify-between gap-4">
         <div>
@@ -168,7 +176,7 @@ export function DocumentAnalyzer({ onAnalysisComplete, onAnalysisReset }: Props)
               <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
             </div>
             {!analyzing && (
-              <Button type="button" variant="ghost" size="icon" onClick={removeFile} title="Remove file">
+              <Button type="button" variant="ghost" size="icon" onClick={removeFile} title="Remove file" aria-label="Remove file">
                 <X className="size-4" />
               </Button>
             )}
@@ -327,4 +335,3 @@ function formatBytes(bytes: number) {
   if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
 }
-

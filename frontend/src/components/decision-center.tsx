@@ -62,7 +62,15 @@ function normalizeProvider(value: string) {
 
 export function DecisionCenter({ result, loading, error, onOpenTrends, documentAnalysis }: DecisionCenterProps) {
   return (
-    <section className="panel overflow-hidden" aria-labelledby="decision-title">
+    <section
+      className="panel card-decision overflow-hidden"
+      aria-labelledby="decision-title"
+      onPointerMove={(event) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        event.currentTarget.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+        event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
+      }}
+    >
       <header className="flex items-center justify-between border-b border-border px-5 py-4 sm:px-6">
         <div>
           <p className="eyebrow">03 / Decision center</p>

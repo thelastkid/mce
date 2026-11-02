@@ -12,7 +12,7 @@ import {
   CheckCircle2,
   Sparkles,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, type PointerEvent } from "react";
 
 import { DecisionCenter, type DeployResult } from "@/components/decision-center";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,12 @@ function Index() {
   const [showPlantModal, setShowPlantModal] = useState(false);
   const [showTrendsModal, setShowTrendsModal] = useState(false);
   const [documentAnalysis, setDocumentAnalysis] = useState<DocumentAnalysis | null>(null);
+
+  function trackPointer(event: PointerEvent<HTMLElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty("--mx", `${event.clientX - rect.left}px`);
+    event.currentTarget.style.setProperty("--my", `${event.clientY - rect.top}px`);
+  }
 
   async function estimatePlacement() {
     setLoading(true);
@@ -130,7 +136,7 @@ function Index() {
                 Test Plant Disease Model
               </Button>
             )}
-            <div className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">
+            <div className="engine-status hidden items-center gap-2 text-xs sm:flex">
               <span className="size-1.5 rounded-full bg-success" />
               Engine operational
             </div>
@@ -185,7 +191,7 @@ function Index() {
           />
 
           {/* 02 Resource Configuration (Fully editable) */}
-          <section className="panel p-5 sm:p-6" aria-labelledby="resources-title">
+          <section className="panel card-resources p-5 sm:p-6" aria-labelledby="resources-title" onPointerMove={trackPointer}>
             <div className="mb-5 flex items-center justify-between">
               <div>
                 <p className="eyebrow">02 / Resources</p>
@@ -345,7 +351,7 @@ function Stepper({
         >
           <Minus className="size-3.5" />
         </Button>
-        <div className="selected-value">
+        <div key={`${label}-${value}`} className="selected-value">
           <strong>{value}</strong>
           <span>{unit ?? "cores"}</span>
         </div>
